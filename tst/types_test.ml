@@ -13,8 +13,14 @@ let test_attribute_definition_maximum _ =
   assert_raises (Failure "AttributeName length must be between 1 and 255 inclusive.")
     (fun () -> let _ = Types.attribute_definition (String.make 256 '_') Types.S in ())
 
+let test_attribute_definition_json _ =
+  let attr_def = Types.attribute_definition "testAttributeName" Types.S in
+  let json = Types.json_of_attribute_definition attr_def in
+  assert_equal "{\"testAttributeName\":\"S\"}" (Yojson.Basic.to_string json)
+
 let suite = "types_test" >::: [
-  "test_attribute_definition" >:: test_attribute_definition;
+  "test_attribute_definition"         >:: test_attribute_definition;
   "test_attribute_definition_minimum" >:: test_attribute_definition_minimum;
-  "test_attribute_definition_maximum" >:: test_attribute_definition_maximum
+  "test_attribute_definition_maximum" >:: test_attribute_definition_maximum;
+  "test_attribute_definition_json"    >:: test_attribute_definition_json
 ]

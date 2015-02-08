@@ -24,13 +24,13 @@ clean:
                 ${ROOT}/index.html
 
 build:
-	@ocamlbuild -use-ocamlfind          \
-         -pkgs aws                          \
+	@ocamlbuild -use-ocamlfind             \
+         -pkgs cohttp,yojson                   \
          src/main.native
 
 build-test:
 	@ocamlbuild -Is src,tst -use-ocamlfind \
-         -pkgs ounit                           \
+         -pkgs ounit,yojson                    \
          tst/testmain.native
 
 test: build-test
@@ -40,7 +40,7 @@ install-deps:
 	@brew update
 	@brew install opam pkg-config pcre
 	@opam update
-	opam install ounit cohttp
+	opam install ounit yojson cohttp
 
 readme:
 	markdown ${ROOT}/README.md > ${ROOT}/index.html
