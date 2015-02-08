@@ -1,2 +1,12 @@
 # ocaml-dynamodb
-Amazon DynamoDB client library.
+
+OCaml library providing an Amazon DynamoDB client.
+
+## Build
+
+    $ make
+
+## Test
+
+    $ make test
+
