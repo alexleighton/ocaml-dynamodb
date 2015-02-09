@@ -26,7 +26,7 @@ clean:
 build:
 	@ocamlbuild -use-ocamlfind             \
          -pkgs cohttp,yojson                   \
-         src/main.native
+         src/dynamoDB.cmxa
 
 build-test:
 	@ocamlbuild -Is src,tst -use-ocamlfind \
