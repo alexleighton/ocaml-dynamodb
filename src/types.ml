@@ -1,5 +1,5 @@
 (*
- * Attribute Definition
+ * AttributeDefinition
  * http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeDefinition.html
  *)
 
@@ -22,4 +22,5 @@ let attribute_definition name typ =
 
 let json_of_attribute_definition = function
   | AttributeDefinition (name, typ) ->
-    `Assoc [name, `String (string_of_attribute_type typ)]
+    `Assoc ["AttributeName", `String name;
+            "AttributeType", `String (string_of_attribute_type typ)]
