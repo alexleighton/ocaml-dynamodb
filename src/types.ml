@@ -24,3 +24,25 @@ let json_of_attribute_definition = function
   | AttributeDefinition (name, typ) ->
     `Assoc ["AttributeName", `String name;
             "AttributeType", `String (string_of_attribute_type typ)]
+
+
+(*
+ * KeySchemaElement
+ * http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_KeySchemaElement.html
+ *)
+
+type key_type = HASH | RANGE
+
+let string_of_key_type = function
+  | HASH -> "HASH" | RANGE -> "RANGE"
+
+type key_schema_element = KeySchemaElement of string * key_type
+
+let key_schema_element name typ =
+  let attr_name = attribute_name name in
+  KeySchemaElement (attr_name, typ)
+
+let json_of_key_schema_element = function
+  | KeySchemaElement (name, typ) ->
+    `Assoc ["AttributeName", `String name;
+            "KeyType", `String (string_of_key_type typ)]
