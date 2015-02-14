@@ -46,3 +46,17 @@ let json_of_key_schema_element = function
   | KeySchemaElement (name, typ) ->
     `Assoc ["AttributeName", `String name;
             "KeyType", `String (string_of_key_type typ)]
+
+
+(*
+ * ProvisionedThroughput
+ * http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ProvisionedThroughput.html
+ *)
+
+type provisioned_throughput = ProvisionedThroughput of int * int
+
+let provisioned_throughput read write =
+  if read < 1 || write < 1
+  then failwith "Provisioned throughput must be a minimum of 1 unit."
+  else
+    ProvisionedThroughput (read, write)
