@@ -1,11 +1,12 @@
 open OUnit2
+open Types
 
 (* AttributeDefinition *)
 
 let test_attribute_definition _ =
   let attr_def = Types.attribute_definition "testAttributeName" Types.S in
-  match attr_def with
-    | Types.AttributeDefinition (name, _) -> assert_equal "testAttributeName" name
+  assert_equal "testAttributeName" attr_def.name;
+  assert_equal Types.S attr_def.t
 
 let test_attribute_definition_minimum _ =
   assert_raises (Failure "AttributeName length must be between 1 and 255 inclusive.")
@@ -26,8 +27,8 @@ let test_attribute_definition_json _ =
 
 let test_key_schema_element _ =
   let key_schema = Types.key_schema_element "testAttributeName" Types.HASH in
-  match key_schema with
-    | Types.KeySchemaElement (name, _) -> assert_equal "testAttributeName" name
+  assert_equal "testAttributeName" key_schema.name;
+  assert_equal Types.HASH key_schema.t
 
 let test_key_schema_element_minimum _ =
   assert_raises (Failure "AttributeName length must be between 1 and 255 inclusive.")
@@ -48,10 +49,8 @@ let test_key_schema_element_json _ =
 
 let test_provisioned_throughput _ =
   let pt = Types.provisioned_throughput 10 5 in
-  match pt with
-    | Types.ProvisionedThroughput (read, write) ->
-      assert_equal 10 read;
-      assert_equal 5 write
+  assert_equal 10 pt.read_capacity;
+  assert_equal 5 pt.write_capacity
 
 let test_provisioned_throughput_minimum_read _ =
   assert_raises (Failure "Provisioned throughput must be a minimum of 1 unit.")

@@ -14,16 +14,15 @@ let attribute_name name =
   then failwith "AttributeName length must be between 1 and 255 inclusive."
   else name
 
-type attribute_definition = AttributeDefinition of string * attribute_type
+type attribute_definition = { name: string; t: attribute_type }
 
 let attribute_definition name typ =
   let attr_name = attribute_name name in
-  AttributeDefinition (attr_name, typ)
+  { name=attr_name; t=typ }
 
-let json_of_attribute_definition = function
-  | AttributeDefinition (name, typ) ->
-    `Assoc ["AttributeName", `String name;
-            "AttributeType", `String (string_of_attribute_type typ)]
+let json_of_attribute_definition attr_def =
+  `Assoc ["AttributeName", `String attr_def.name;
+          "AttributeType", `String (string_of_attribute_type attr_def.t)]
 
 
 (*
@@ -36,16 +35,15 @@ type key_type = HASH | RANGE
 let string_of_key_type = function
   | HASH -> "HASH" | RANGE -> "RANGE"
 
-type key_schema_element = KeySchemaElement of string * key_type
+type key_schema_element = { name: string; t: key_type }
 
 let key_schema_element name typ =
   let attr_name = attribute_name name in
-  KeySchemaElement (attr_name, typ)
+  { name=attr_name; t=typ }
 
-let json_of_key_schema_element = function
-  | KeySchemaElement (name, typ) ->
-    `Assoc ["AttributeName", `String name;
-            "KeyType", `String (string_of_key_type typ)]
+let json_of_key_schema_element key_schema =
+  `Assoc ["AttributeName", `String key_schema.name;
+          "KeyType", `String (string_of_key_type key_schema.t)]
 
 
 (*
@@ -53,10 +51,10 @@ let json_of_key_schema_element = function
  * http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ProvisionedThroughput.html
  *)
 
-type provisioned_throughput = ProvisionedThroughput of int * int
+type provisioned_throughput = { read_capacity: int; write_capacity: int }
 
 let provisioned_throughput read write =
   if read < 1 || write < 1
   then failwith "Provisioned throughput must be a minimum of 1 unit."
   else
-    ProvisionedThroughput (read, write)
+    { read_capacity=read; write_capacity=write }
