@@ -58,3 +58,8 @@ let provisioned_throughput read write =
   then failwith "Provisioned throughput must be a minimum of 1 unit."
   else
     { read_capacity=read; write_capacity=write }
+
+
+let json_of_provisioned_throughput pt =
+  `Assoc ["ReadCapacityUnits", `String (string_of_int pt.read_capacity);
+          "WriteCapacityUnits", `String (string_of_int pt.write_capacity)]

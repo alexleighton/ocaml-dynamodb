@@ -60,6 +60,11 @@ let test_provisioned_throughput_minimum_write _ =
   assert_raises (Failure "Provisioned throughput must be a minimum of 1 unit.")
     (fun () -> let _ = Types.provisioned_throughput 1 0 in ())
 
+let test_provisioned_throughput_json _ =
+  let pt = Types.provisioned_throughput 10 5 in
+  let json = Types.json_of_provisioned_throughput pt in
+  assert_equal "{\"ReadCapacityUnits\":\"10\",\"WriteCapacityUnits\":\"5\"}"
+    (Yojson.Basic.to_string json)
 
 (* Test Suite *)
 
@@ -77,4 +82,5 @@ let suite = "types_test" >::: [
   "test_provisioned_throughput"               >:: test_provisioned_throughput;
   "test_provisioned_throughput_minimum_read"  >:: test_provisioned_throughput_minimum_read;
   "test_provisioned_throughput_minimum_write" >:: test_provisioned_throughput_minimum_write;
+  "test_provisioned_throughput_json"          >:: test_provisioned_throughput_json;
 ]
