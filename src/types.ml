@@ -59,7 +59,46 @@ let provisioned_throughput read write =
   else
     { read_capacity=read; write_capacity=write }
 
-
 let json_of_provisioned_throughput pt =
   `Assoc ["ReadCapacityUnits", `String (string_of_int pt.read_capacity);
           "WriteCapacityUnits", `String (string_of_int pt.write_capacity)]
+
+
+(*
+ * Projection
+ * http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Projection.html
+ * TODO:
+ *   - Since neither value is required, test whether Dynamo expects an empty object
+ *     or no object when both values are not specified.
+ *   - Test whether there are any limits on NonKeyAttributes like string length.
+ *)
+
+type projection_type = KEYS_ONLY | INCLUDE | ALL
+
+let string_of_projection_type = function
+  | KEYS_ONLY -> "KEYS_ONLY" | INCLUDE -> "INCLUDE" | ALL -> "ALL"
+
+type projection = {
+  non_key_attributes: string list option;
+  projection_type:    projection_type option;
+}
+
+let projection ?projection_type:(pt=None) non_key_attributes =
+  if List.length non_key_attributes > 20
+  then failwith "NonKeyAttributes must be between 1 and 20 elements."
+  else
+    let nka = if non_key_attributes == [] then None else Some non_key_attributes in
+    {
+      non_key_attributes = nka;
+      projection_type = pt
+    }
+
+let json_of_projection proj =
+  let nkas = List.map (fun a -> `String a) (match proj.non_key_attributes with
+    | Some nkas -> nkas | None -> [])
+  in
+  let attrs = if nkas == [] then [] else [("NonKeyAttributes", `List nkas)] in
+  let attrs = attrs @ match proj.projection_type with
+    | Some t -> ["ProjectionType", `String (string_of_projection_type t)] | None -> []
+  in
+  `Assoc attrs
