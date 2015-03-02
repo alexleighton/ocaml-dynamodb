@@ -1,4 +1,6 @@
-module Types = Types
+module Types = DDB_Types
+
+module AWSSignature = DDB_Signature.AWSSignature(DDB_Signature.UnixTime)
 
 let create_table () =
   let open Lwt in
@@ -7,5 +9,5 @@ let create_table () =
   Cohttp_lwt_body.to_string body >>= fun b ->
   Lwt_io.printl b
 
-let _ =
-  Lwt_main.run (create_table ())
+(* let _ = *)
+(*   Lwt_main.run (create_table ()) *)
